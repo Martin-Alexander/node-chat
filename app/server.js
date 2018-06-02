@@ -1,17 +1,24 @@
-const HTTP = require("http");
 const WebSocketServer = require("websocket").server;
+const finalhandler    = require('finalhandler');
+const serveStatic     = require('serve-static');
+const HTTP            = require("http");
+const fs              = require("fs");
 
 class ChatServer {
   constructor(port) {
     this.initializeHTTPServer(port);
     this.initializeWebsocketServer();
-
     
     this.liveWebsocketConnections = [];
   };
   
   initializeHTTPServer(port) {
-    this.server = HTTP.createServer(function(request, response) {});
+    const serve = serveStatic("./public/");
+
+    this.server = HTTP.createServer(function(request, response) {
+      const done = finalhandler(request, response);
+      serve(request, response, done);
+    });
     this.server.listen(port);
   };
 
