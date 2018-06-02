@@ -59,4 +59,4 @@ class ChatServer {
   };
 }
 
-new ChatServer(80);
+new ChatServer(process.env.PORT || 8080);
