@@ -59,4 +59,4 @@ class ChatServer {
   };
 }
 
-new ChatServer(3000);
+new ChatServer(80);
