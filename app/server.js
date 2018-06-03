@@ -22,7 +22,11 @@ class ChatServer {
       const done = finalhandler(request, response);
       serve(request, response, done);
     });
-    this.server.listen(port);
+
+    this.server.listen(port, (error) => {
+      if (error) { return console.log(error) };
+      console.log(`server is listening on ${port}`)
+    })
 
     console.log("==============SERVER UP==================");
   };
