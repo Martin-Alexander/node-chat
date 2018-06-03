@@ -6,7 +6,6 @@ const fs              = require("fs");
 
 class ChatServer {
   constructor(port) {
-    console.log("==============CONSTRUCTOR==================");
     this.initializeHTTPServer(port);
     this.initializeWebsocketServer();
     
@@ -17,18 +16,10 @@ class ChatServer {
     const serve = serveStatic("./public/");
 
     this.server = HTTP.createServer(function(request, response) {
-      console.log("HERE");
-
       const done = finalhandler(request, response);
       serve(request, response, done);
     });
-
-    this.server.listen(parseInt(port), (error) => {
-      if (error) { return console.log(error) };
-      console.log(`server is listening on ${port}`)
-    })
-
-    console.log("==============SERVER UP==================");
+    this.server.listen(port);
   };
 
   initializeWebsocketServer() {
@@ -69,6 +60,3 @@ class ChatServer {
 }
 
 new ChatServer(process.env.PORT || 3000);
-
-console.log(process.env.PORT);
-console.log("==============OUTSIDE==================");
