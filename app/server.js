@@ -16,6 +16,8 @@ class ChatServer {
     const serve = serveStatic("./public/");
 
     this.server = HTTP.createServer(function(request, response) {
+      console.log("HERE");
+
       const done = finalhandler(request, response);
       serve(request, response, done);
     });
@@ -59,4 +61,4 @@ class ChatServer {
   };
 }
 
-new ChatServer(process.env.PORT || 8080);
+new ChatServer(process.env.PORT || 3000);
