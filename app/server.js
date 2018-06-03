@@ -6,6 +6,7 @@ const fs              = require("fs");
 
 class ChatServer {
   constructor(port) {
+    console.log("==============CONSTRUCTOR==================");
     this.initializeHTTPServer(port);
     this.initializeWebsocketServer();
     
@@ -22,6 +23,8 @@ class ChatServer {
       serve(request, response, done);
     });
     this.server.listen(port);
+
+    console.log("==============SERVER UP==================");
   };
 
   initializeWebsocketServer() {
@@ -62,3 +65,6 @@ class ChatServer {
 }
 
 new ChatServer(process.env.PORT || 3000);
+
+console.log(process.env.PORT);
+console.log("==============OUTSIDE==================");
