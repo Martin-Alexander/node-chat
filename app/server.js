@@ -23,7 +23,7 @@ class ChatServer {
       serve(request, response, done);
     });
 
-    this.server.listen(port, (error) => {
+    this.server.listen(parseInt(port), (error) => {
       if (error) { return console.log(error) };
       console.log(`server is listening on ${port}`)
     })
