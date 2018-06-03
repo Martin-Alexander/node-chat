@@ -2,7 +2,7 @@ const inputField = document.getElementById("input-field");
 const sendButton = document.getElementById("send-button");
 const messageList = document.getElementById("message-list");
 
-const websocket = new WebSocket("ws://localhost:3000", "echo-protocol");
+const websocket = new WebSocket("ws://hello-cli.herokuapp.com/", "echo-protocol");
 
 const sendMessage = () => {
   const userInput = inputField.value;
