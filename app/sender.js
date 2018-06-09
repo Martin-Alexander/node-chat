@@ -20,9 +20,15 @@ class Sender {
   };
 
   static find(id) {
+    id = parseInt(id);
+
     return new Promise((resolve, reject) => {
       Sender.RedisClient.hget("senders", id, (error, reply) => {
-        if (reply !== null) resolve(new Sender(reply, id));
+        if (reply !== null) {
+          resolve(new Sender(reply, id));
+        } else {
+          resolve(null);
+        }
       });
     });
   };
