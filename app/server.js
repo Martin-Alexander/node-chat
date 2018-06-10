@@ -3,16 +3,30 @@ const Sender          = require("./sender.js");
 const ChatServer      = require("./chat_server.js");
 const Message         = require("./message.js");
 
-RedisClient = redis.createClient(6379, { db: 10 });
+const WebSocketRouter     = require("./web_socket_router");
+const WebSocketController = require("./web_socket_controller");
+const WebSocketRoute      = require("./web_socket_route");
+
+
+const routes = [
+  "new_message",
+  "new_sender"
+].map(methodName => new WebSocketRoute(methodName));
+
+// const controller = new WebSocketController();
+// const router = new WebSocketRouter(controller, routes);
+
+const serverPort = process.env.PORT || 3000;
+const redisPort = process.env.REDIS_URL || 6379
+
+RedisClient = redis.createClient(redisPort, { db: 10 });
 
 Sender.initialize(RedisClient)
-  .then(() => Sender.all())
-  .then(senders => console.log(senders));
-
-Message.initialize(RedisClient)
-  // .then(() => Message.find(3))
-  // .then(message => message.destroy())
-  .then(() => Message.all())
-  .then(messages => console.log(messages));
-
-new ChatServer(process.env.PORT || 3000);
+  .then(() => Message.initialize(RedisClient))
+  .then(() => {
+    new ChatServer({
+      port: serverPort,
+      router: router,
+      controller: controller
+    });
+  });

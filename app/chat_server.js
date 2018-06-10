@@ -5,8 +5,11 @@ const HTTP            = require("http");
 const fs              = require("fs");
 
 class ChatServer {
-  constructor(port) {
-    this.initializeHTTPServer(port);
+  constructor(params = {}) {
+    this.router = params.router;
+    this.controller = params.controller;
+
+    this.initializeHTTPServer(params.port);
     this.initializeWebsocketServer();
     
     this.liveWebsocketConnections = [];
@@ -33,35 +36,33 @@ class ChatServer {
     });
   };
   
-  // Takes a request, creates a connection, attaches the on message event 
-  // listener, and adds the connection to the list of live connections
   setupNewConnection(request) {
     const connection = request.accept("echo-protocol", request.origin);
+
     connection.on("message", (message) => { 
-      this.relayMessageToAllClients(message);
+      this.router.respond(message)
     });
-    this.addConnectionToList(connection);
   }
 
   // Adds the connection to the list of live websocket connections
-  addConnectionToList(connection) {
-    this.liveWebsocketConnections.push(connection);
-  };
+  // addConnectionToList(connection) {
+  //   this.liveWebsocketConnections.push(connection);
+  // };
   
   // Given a message relays across all connections in the list of live
   // connections
-  relayMessageToAllClients(message) {
-    this.liveWebsocketConnections.forEach((connection) => {
-      const messageText = message.utf8Data;
-      this.sendMessageToConnection(messageText, connection);
-    });
-  };
+  // relayMessageToAllClients(message) {
+  //   this.liveWebsocketConnections.forEach((connection) => {
+  //     const messageText = message.utf8Data;
+  //     this.sendMessageToConnection(messageText, connection);
+  //   });
+  // };
 
   // Sends message text to a given connection
-  sendMessageToConnection(messageText, connection) {
-    console.log(`${Date.now()} -- transmitting message: "${messageText}"`);
-    connection.sendUTF(messageText)
-  };
+  // sendMessageToConnection(messageText, connection) {
+  //   console.log(`${Date.now()} -- transmitting message: "${messageText}"`);
+  //   connection.sendUTF(messageText)
+  // };
 }
 
 module.exports = ChatServer;
