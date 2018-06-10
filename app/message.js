@@ -31,18 +31,20 @@ class Message {
     initializeAsyncRedisCommands(redisClient);
 
     return new Promise((resolve) => {
-      this.initializeNextMessageId().then(() => resolve())
+      this.initializeNextthisId().then(() => resolve())
     });
   };
   
-  static initializeNextMessageId() {
+  static initializeNextthisId() {
     return new Promise((resolve, reject) => {
       this.RedisClient.get("next_message_id", (error, reply) => {
         if (reply !== null) {
-          this.nextMessageId = parseInt(reply);
+          this.nextthisId = parseInt(reply);
           resolve(Sender);
         } else {
-          this.RedisClient.set("next_message_id", 1, (error, reply) => resolve(Sender));
+          this.RedisClient.set("next_message_id", 1, (error, reply) => { 
+            resolve(Sender) 
+          });
         }
       });
     });
@@ -52,12 +54,14 @@ class Message {
     return new Promise((resolve, reject) => {
 
       llenAsync("message_id_list")
-        .then((lengthOfMessageIdList) => {
-          return lrangeAsync(("message_id_list"), 0, lengthOfMessageIdList - 1);
+        .then((lengthOfthisIdList) => {
+          return lrangeAsync(("message_id_list"), 0, lengthOfthisIdList - 1);
         })
         .then((messageIdList) => {
           debugger
-          return Promise.all(messageIdList.map(messageId => this.find(messageId)));
+          return Promise.all(messageIdList.map((messageId) => { 
+            return this.find(messageId)
+          }));
         })
         .then(values => resolve(values));
     });
@@ -69,7 +73,7 @@ class Message {
         .then((reply) => {
           Sender.find(reply.sender_id).then((sender) => {
             if (reply !== null) {
-              resolve(new Message(sender, reply.content, reply.id));
+              resolve(new this(sender, reply.content, reply.id));
             } else {
               resolve(null);
             }
@@ -81,14 +85,18 @@ class Message {
 
   static getNextId() {
     return new Promise((resolve, reject) => {
-      this.RedisClient.get("next_message_id", (error, reply) => resolve(parseInt(reply)));
+      this.RedisClient.get("next_message_id", (error, reply) => {
+        return resolve(parseInt(reply));
+      });
     });
   };
 
   static incrementNextId() {
     return new Promise((resolve, reject) => {
       this.getNextId().then((nextId) => {
-        this.RedisClient.set("next_message_id", nextId + 1, (error, reply) => resolve());
+        this.RedisClient.set("next_message_id", nextId + 1, (error, reply) => {
+          resolve();
+        });
       });
     });
   };
@@ -107,25 +115,33 @@ class Message {
   
   destroy() {
     return new Promise((resolve, reject) => {
-      delAsync(Message.getHashName(this.id))
+      delAsync(this.getHashName(this.id))
         .then(() => lremAsync("message_id_list", 0, this.id))
         .then(() => resolve(true));
     });
   };
 
   update(resolve, reject) {
-    hsetAsync(Message.getHashName(id), "sender_id", this.sender.id)
-      .then(() => hsetAsync(Message.getHashName(id), "content", this.content))
+    hsetAsync(this.getHashName(id), "sender_id", this.sender.id)
+      .then(() => hsetAsync(this.getHashName(id), "content", this.content))
       .then(() => resolve(this));
   };
   
   insert(resolve, reject) {
-    Message.getNextId().then((nextId) => {
+    this.getNextId().then((nextId) => {
       lpushAsync("message_id_list", nextId)
-        .then(() => Message.incrementNextId())
-        .then(() => hsetAsync(Message.getHashName(nextId), "id", nextId))
-        .then(() => hsetAsync(Message.getHashName(nextId), "sender_id", this.sender.id))
-        .then(() => hsetAsync(Message.getHashName(nextId), "content", this.content))
+        .then(() => this.incrementNextId())
+        .then(() => hsetAsync(this.getHashName(nextId), "id", nextId))
+        .then(() => hsetAsync(
+          this.getHashName(nextId),
+          "sender_id",
+          this.sender.id
+        ))
+        .then(() => hsetAsync(
+          this.getHashName(nextId),
+          "content",
+          this.content
+        ))
         .then(() => resolve(this));
     });
   };

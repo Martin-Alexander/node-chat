@@ -28,14 +28,18 @@ class ChatServer {
         autoAcceptConnections: false
     });
 
-    this.webSocketServer.on("request", (request) => this.setupNewConnection(request));
+    this.webSocketServer.on("request", (request) => {
+      this.setupNewConnection(request)
+    });
   };
   
-  // Takes a request, creates a connection, attaches the on message event listener, and adds the
-  // connection to the list of live connections
+  // Takes a request, creates a connection, attaches the on message event 
+  // listener, and adds the connection to the list of live connections
   setupNewConnection(request) {
     const connection = request.accept("echo-protocol", request.origin);
-    connection.on("message", (message) => this.relayMessageToAllClients(message));
+    connection.on("message", (message) => { 
+      this.relayMessageToAllClients(message);
+    });
     this.addConnectionToList(connection);
   }
 
@@ -44,7 +48,8 @@ class ChatServer {
     this.liveWebsocketConnections.push(connection);
   };
   
-  // Given a message relays across all connections in the list of live connections
+  // Given a message relays across all connections in the list of live
+  // connections
   relayMessageToAllClients(message) {
     this.liveWebsocketConnections.forEach((connection) => {
       const messageText = message.utf8Data;

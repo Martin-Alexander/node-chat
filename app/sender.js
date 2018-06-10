@@ -13,7 +13,9 @@ class Sender {
           Sender.nextSenderId = parseInt(reply);
           resolve();
         } else {
-          Sender.RedisClient.set("next_sender_id", 1, (error, reply) => resolve());
+          Sender.RedisClient.set("next_sender_id", 1, (error, reply) => {
+            resolve()
+          });
         }
       });
     });
@@ -36,7 +38,10 @@ class Sender {
   static all() {
     return new Promise((resolve, reject) => {
       Sender.RedisClient.hgetall("senders", (error, reply) => {
-        const senders = Object.keys(reply).map(senderId => new Sender(reply[senderId], senderId));
+        const senders = Object.keys(reply).map(senderId => { 
+          new Sender(reply[senderId], senderId)
+        });
+        
         resolve(senders);
       });
     });
@@ -53,7 +58,9 @@ class Sender {
   static incrementNextId() {
     return new Promise((resolve, reject) => {
       Sender.getNextId().then((nextId) => {
-        Sender.RedisClient.set("next_sender_id", nextId + 1, (error, reply) => resolve());
+        Sender.RedisClient.set("next_sender_id", nextId + 1, (error, reply) => {
+          resolve();
+        });
       });
     });
   };
@@ -75,7 +82,9 @@ class Sender {
   };
 
   update(resolve, reject) {
-    Sender.RedisClient.hset("senders", this.id, this.name, (error, reply) => resolve(this));
+    Sender.RedisClient.hset("senders", this.id, this.name, (error, reply) => {
+      resolve(this)
+    });
   };
   
   insert(resolve, reject) {
