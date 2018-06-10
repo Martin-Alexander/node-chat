@@ -39,7 +39,7 @@ class Sender {
     return new Promise((resolve, reject) => {
       Sender.RedisClient.hgetall("senders", (error, reply) => {
         const senders = Object.keys(reply).map(senderId => { 
-          new Sender(reply[senderId], senderId)
+          return new Sender(reply[senderId], senderId)
         });
         
         resolve(senders);
