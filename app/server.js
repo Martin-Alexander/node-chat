@@ -13,8 +13,8 @@ const routes = [
   "new_sender"
 ].map(methodName => new WebSocketRoute(methodName));
 
-// const controller = new WebSocketController();
-// const router = new WebSocketRouter(controller, routes);
+const controller = new WebSocketController();
+const router = new WebSocketRouter(controller, routes);
 
 const serverPort = process.env.PORT || 3000;
 const redisPort = process.env.REDIS_URL || 6379

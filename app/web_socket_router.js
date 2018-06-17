@@ -4,7 +4,7 @@ const WebSocketControllerAction = require("./web_socket_controller_action");
 module.exports = class WebSocketRouter {
   constructor(webSocketController, routes) {
     this.webSocketController =  webSocketController;
-    initialize(rawRoutes);
+    this.initialize(routes);
   };
 
   initialize(rawRoutes) {
