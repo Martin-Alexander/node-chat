@@ -9,9 +9,9 @@ const WebSocketRoute      = require("./web_socket_route");
 
 
 const routes = [
-  "new_message",
-  "new_sender"
-].map(methodName => new WebSocketRoute(methodName));
+  "newMessage",
+  "newSender"
+]
 
 const controller = new WebSocketController();
 const router = new WebSocketRouter(controller, routes);

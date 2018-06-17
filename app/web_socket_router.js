@@ -17,7 +17,7 @@ module.exports = class WebSocketRouter {
     new WebSocketControllerAction({
       request: request,
       routes: this.routes,
-      controller: webSocketController
+      controller: this.webSocketController
     });
   };
 }

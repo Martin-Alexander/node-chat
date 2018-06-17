@@ -4,11 +4,20 @@ module.exports = class WebSocketControllerAction {
     controller: null, // WebSocketController
     request: null     // HTTP request
   }) {
-    const data = JSON.parse(request.utf8Data)
+    this.request = params.request;
+    this.controller = params.controller;
+    this.routes = params.routes;
+
+    this.run();
+  };
+  
+  run() {
+    const data = JSON.parse(this.request.utf8Data)
     const method = data.method;
     const body = data.body;
+  
+    const route = this.routes.find(route => route.method === method);
 
-    route = routes.find(route => route.method === method);
-    controller[route.method](body);
-  };
+    this.controller[route.method](body);
+  }
 }

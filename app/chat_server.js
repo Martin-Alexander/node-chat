@@ -39,7 +39,7 @@ class ChatServer {
   setupNewConnection(request) {
     const connection = request.accept("echo-protocol", request.origin);
 
-    connection.on("message", (message) => { 
+    connection.on("message", (message) => {
       this.router.respond(message)
     });
   }

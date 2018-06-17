@@ -1,5 +1,5 @@
 module.exports = class WebSocketController {
-  constructor() {
+  newMessage(body) {
     
   }
 }
